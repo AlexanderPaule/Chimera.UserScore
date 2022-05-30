@@ -1,4 +1,4 @@
-﻿namespace DataStorage
+﻿namespace ScoreSystem.Repository
 {
 	internal class User
 	{

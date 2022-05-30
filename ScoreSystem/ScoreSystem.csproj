@@ -5,11 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="NEST" Version="7.17.2" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.1" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\DataStorage\DataStorage.csproj" />
   </ItemGroup>
 
 </Project>
