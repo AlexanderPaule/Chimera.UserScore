@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Nest;
+using ScoreSystem.Scoring;
 using ScoreSystem.Users;
 using System;
 
@@ -23,9 +24,15 @@ namespace ScoreSystem.Repository.Setup
 				.Indices
 				.Create(defaultIndex, index => index.Map<User>(x => x.AutoMap()));
 
+			client
+				.Indices
+				.Create(defaultIndex, index => index.Map<Score>(x => x.AutoMap()));
+
 			var repository = new Repository(client, new RepositoryTranslator());
 
-			services.AddSingleton<IUserRepository>(repository);
+			services.AddSingleton(repository);
+			services.AddScoped<IUserRepository>(x => x.GetService<Repository>());
+			services.AddScoped<IScoreRepository>(x => x.GetService<Repository>());
 		}
 	}
 }

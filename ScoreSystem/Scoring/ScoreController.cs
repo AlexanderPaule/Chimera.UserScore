@@ -3,34 +3,34 @@ using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 
-namespace ScoreSystem.Users
+namespace ScoreSystem.Scoring
 {
 	[ApiController]
 	[Route("[controller]")]
-	public class UserController : ControllerBase
+	public class ScoreController : ControllerBase
 	{
-		private readonly IUserRepository _repository;
+		private readonly IScoreRepository _repository;
 
-		public UserController(IUserRepository repository)
+		public ScoreController(IScoreRepository repository)
 		{
 			_repository = repository;
 		}
 
-		[HttpPost("Register")]
+		[HttpPost("Store")]
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
 		[ProducesResponseType(StatusCodes.Status500InternalServerError)]
-		public async Task<IActionResult> RegisterAsync([FromBody, Required] User user)
+		public async Task<IActionResult> Store([FromBody, Required] UserScore score)
 		{
-			var response = await _repository.InsertAsync(user);
+			var response = await _repository.InsertAsync(score);
 
-			if (response.IsDuplicated)
-				return BadRequest($"User {user.Username} already Exists");
-			
+			if (!response.IsUserRegistered)
+				return BadRequest($"User {score.Username} is not registered and can't report score");
+
 			if (!response.IsSuccessStatusCode)
 				return StatusCode(500, response.Message);
 
-			return Ok(user);
+			return Ok(score);
 		}
 	}
 }
