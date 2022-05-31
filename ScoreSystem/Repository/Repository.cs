@@ -1,7 +1,6 @@
 ﻿using Nest;
 using ScoreSystem.Scoring;
 using ScoreSystem.Users;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,6 +12,8 @@ namespace ScoreSystem.Repository
 	// TODO: Introduce Retry Strategy
 	internal class Repository : IUserRepository, IScoreRepository
 	{
+		private const int MaxElasticAllowedSize = 10000;
+
 		private readonly ElasticClient _client;
 		private readonly RepositoryTranslator _translator;
 
@@ -107,31 +108,67 @@ namespace ScoreSystem.Repository
 			};
 		}
 
-		public async Task<IScoreRepositoryResponse<IReadOnlyCollection<RegisteredUserScore>>> GetHighestAsync(DateTimeOffset rangeFrom, DateTimeOffset rangeTo, int from, int howMuch)
+		public async Task<IScoreRepositoryResponse<IReadOnlyCollection<RegisteredUserScore>>> GetHighestAsync(int howMuch)
 		{
-			var scores = await _client
+			var topScoresExtraction = await _client
 				.SearchAsync<UserScore>(x => x
-					.From(from)
-					.Size(howMuch)
-					.Query(q => q.DateRange(m => m
-						.Field(f => f.OccurredOn)
-						.GreaterThanOrEquals(DateMath.Anchored(rangeFrom.DateTime).RoundTo(DateMathTimeUnit.Second))
-						.LessThanOrEquals(DateMath.Anchored(rangeTo.DateTime).RoundTo(DateMathTimeUnit.Second)))
-					));
+					.Aggregations(a => a
+						.Terms("scores", u => u
+							.Size(howMuch)
+							.Field(f => f.Username)
+							.Order(o => o.Descending("top_value"))
+							.Aggregations(aa => aa.Max("top_value", tv => tv.Field(f => f.Value)))
+						)
+					)
+					.Sort(so => so.Descending(x => x.Value)));
 
-			if (!scores.IsValid)
+			if (!topScoresExtraction.IsValid)
 			{
 				return new RepositoryResponse<IReadOnlyCollection<RegisteredUserScore>>
 				{
 					GenericError = true,
-					Message = $"Something went wrong during the retriving operation [{scores.ServerError}]"
+					Message = $"Something went wrong during the retriving operation [{topScoresExtraction.ServerError}]"
 				};
 			}
+
+			var topScores = topScoresExtraction
+				.Aggregations
+				.Terms("scores")
+				.Buckets
+				.Select(x => new
+				{
+					Username = x.Key,
+					Value = x.Max("top_value").Value
+				})
+				.ToList();
+
+			var allScoresForTopPlacedUsers = await _client
+				.SearchAsync<UserScore>(x => x
+					.Size(MaxElasticAllowedSize)
+					.Query(q => q.
+						Bool(b => b.Should(s => s.FieldContains("username", topScores.Select(x => x.Username).ToArray())))
+					));
+
+			if (!allScoresForTopPlacedUsers.IsValid)
+			{
+				return new RepositoryResponse<IReadOnlyCollection<RegisteredUserScore>>
+				{
+					GenericError = true,
+					Message = $"Something went wrong during the retriving operation [{allScoresForTopPlacedUsers.ServerError}]"
+				};
+			}
+
+			var topCoreScores = allScoresForTopPlacedUsers
+				.Documents
+				.Join(topScores, s => $"{s.Username}-{s.Value}", a => $"{a.Username}-{a.Value}", (s, a) => s)
+				.Select(_translator.Convert)
+				.OrderByDescending(x => x.Value)
+				.ToList();
 
 			return new RepositoryResponse<IReadOnlyCollection<RegisteredUserScore>>
 			{
 				Message = $"Operation Successfully Complete",
-				Object = scores.Documents.Select(_translator.Convert).ToList()
+				Object = topCoreScores
 			};
 		}
 
@@ -140,7 +177,6 @@ namespace ScoreSystem.Repository
 		{
 			return await _client
 				.SearchAsync<User>(x => x
-					.From(0)
 					.Size(1)
 					.Query(q => q.Match(m => m
 						.Field(f => f.Username)

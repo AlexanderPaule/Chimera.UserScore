@@ -7,7 +7,7 @@ using System;
 
 namespace ScoreSystem.Repository.Setup
 {
-	public static class SetupExtensions
+	internal static class SetupExtensions
 	{
 		public static void AddElasticsearch(this IServiceCollection services, IConfiguration configuration)
 		{
@@ -22,11 +22,21 @@ namespace ScoreSystem.Repository.Setup
 
 			client
 				.Indices
-				.Create(defaultIndex, index => index.Map<User>(x => x.AutoMap()));
+				.Create(defaultIndex, index => index
+					.Map<User>(x => x
+						.AutoMap()
+						.Properties(p => p.Keyword(k => k.Name(n => n.Username)))
+					)
+				);
 
 			client
 				.Indices
-				.Create(defaultIndex, index => index.Map<UserScore>(x => x.AutoMap()));
+				.Create(defaultIndex, index => index
+					.Map<UserScore>(x => x
+						.AutoMap()
+						.Properties(p => p.Keyword(k => k.Name(n => n.Username)))
+					)
+				);
 
 			var repository = new Repository(client, new RepositoryTranslator());
 

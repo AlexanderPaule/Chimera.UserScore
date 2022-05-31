@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 
@@ -38,23 +37,13 @@ namespace ScoreSystem.Scoring
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
 		[ProducesResponseType(StatusCodes.Status500InternalServerError)]
-		public async Task<IActionResult> GetScoreAsync(
-			[FromQuery] DateTimeOffset rangeFrom, [FromQuery] DateTimeOffset rangeTo,
-			[FromQuery] int from = 0, [FromQuery] int howMuch = 10)
+		public async Task<IActionResult> GetScoreAsync([FromQuery] int howMuch = 10)
 		{
-			var now = DateTimeOffset.Now;
-
-			if (now < rangeFrom)
-				return BadRequest($"[{nameof(rangeFrom)}] must contain only past time info");
-			
-			if (rangeTo == default)
-				rangeTo = now;
-
-			if (rangeFrom > rangeTo)
-				return BadRequest($"[{nameof(rangeFrom)}] can't be grater than [{nameof(rangeTo)}]");
+			if (howMuch < 0 || 10000 < howMuch)
+				return BadRequest($"[{nameof(howMuch)}] must be contained in the range 0 - 10000");
 
 			var response = await _repository
-				.GetHighestAsync(rangeFrom, rangeTo, from, howMuch);
+				.GetHighestAsync(howMuch);
 
 			if (!response.IsSuccessStatusCode)
 				return StatusCode(500, response.Message);
