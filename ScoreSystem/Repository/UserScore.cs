@@ -2,7 +2,7 @@
 
 namespace ScoreSystem.Repository
 {
-	internal class Score
+	internal class UserScore
 	{
 		public string Username { get; set; }
 		public int Value { get; set; }

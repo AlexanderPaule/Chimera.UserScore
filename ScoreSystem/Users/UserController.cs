@@ -20,7 +20,7 @@ namespace ScoreSystem.Users
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
 		[ProducesResponseType(StatusCodes.Status500InternalServerError)]
-		public async Task<IActionResult> RegisterAsync([FromBody, Required] User user)
+		public async Task<IActionResult> PostUserAsync([FromBody, Required] User user)
 		{
 			var response = await _repository.InsertAsync(user);
 
@@ -30,7 +30,7 @@ namespace ScoreSystem.Users
 			if (!response.IsSuccessStatusCode)
 				return StatusCode(500, response.Message);
 
-			return Ok(user);
+			return Ok(response.Object);
 		}
 	}
 }

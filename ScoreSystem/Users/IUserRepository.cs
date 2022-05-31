@@ -4,6 +4,6 @@ namespace ScoreSystem.Users
 {
 	public interface IUserRepository
 	{
-		Task<IUserRepositoryResponse> InsertAsync(User user);
+		Task<IUserRepositoryResponse<User>> InsertAsync(User user);
 	}
 }

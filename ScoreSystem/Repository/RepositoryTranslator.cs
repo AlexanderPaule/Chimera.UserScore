@@ -1,6 +1,7 @@
 ﻿using System;
 using CoreUser = ScoreSystem.Users.User;
 using CoreUserScore = ScoreSystem.Scoring.UserScore;
+using CoreegisteredUserScore = ScoreSystem.Scoring.RegisteredUserScore;
 
 namespace ScoreSystem.Repository
 {
@@ -14,13 +15,23 @@ namespace ScoreSystem.Repository
 			};
 		}
 
-		internal Score Convert(CoreUserScore score)
+		internal UserScore Convert(CoreUserScore score)
 		{
-			return new Score
+			return new UserScore
 			{
 				Username = score.Username,
 				Value = score.Value.Value,
-				OccurredOn = DateTimeOffset.Now
+				OccurredOn = DateTimeOffset.UtcNow
+			};
+		}
+
+		internal CoreegisteredUserScore Convert(UserScore score)
+		{
+			return new CoreegisteredUserScore
+			{
+				Username = score.Username,
+				Value = score.Value,
+				OccurredOn = score.OccurredOn
 			};
 		}
 	}

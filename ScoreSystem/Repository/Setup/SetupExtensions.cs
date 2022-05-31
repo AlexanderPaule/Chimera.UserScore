@@ -26,7 +26,7 @@ namespace ScoreSystem.Repository.Setup
 
 			client
 				.Indices
-				.Create(defaultIndex, index => index.Map<Score>(x => x.AutoMap()));
+				.Create(defaultIndex, index => index.Map<UserScore>(x => x.AutoMap()));
 
 			var repository = new Repository(client, new RepositoryTranslator());
 

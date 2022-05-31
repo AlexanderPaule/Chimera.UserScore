@@ -1,9 +1,12 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace ScoreSystem.Scoring
 {
 	public interface IScoreRepository
 	{
-		Task<IScoreRepositoryResponse> InsertAsync(UserScore score);
+		Task<IScoreRepositoryResponse<RegisteredUserScore>> InsertAsync(UserScore score);
+		Task<IScoreRepositoryResponse<IReadOnlyCollection<RegisteredUserScore>>> GetHighestAsync(DateTimeOffset rangeFrom, DateTimeOffset rangeTo, int from, int howMuch);
 	}
 }
