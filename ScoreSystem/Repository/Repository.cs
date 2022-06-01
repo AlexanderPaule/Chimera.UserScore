@@ -9,7 +9,6 @@ using CoreUserScore = ScoreSystem.Scoring.UserScore;
 
 namespace ScoreSystem.Repository
 {
-	// TODO: Introduce Retry Strategy
 	internal class Repository : IUserRepository, IScoreRepository
 	{
 		private const int MaxElasticAllowedSize = 10000;
@@ -116,8 +115,8 @@ namespace ScoreSystem.Repository
 						.Terms("scores", u => u
 							.Size(howMuch)
 							.Field(f => f.Username)
-							.Order(o => o.Descending("top_value"))
-							.Aggregations(aa => aa.Max("top_value", tv => tv.Field(f => f.Value)))
+							.Order(o => o.Descending("max_value"))
+							.Aggregations(aa => aa.Max("max_value", tv => tv.Field(f => f.Value)))
 						)
 					)
 					.Sort(so => so.Descending(x => x.Value)));
@@ -138,7 +137,7 @@ namespace ScoreSystem.Repository
 				.Select(x => new
 				{
 					Username = x.Key,
-					Value = x.Max("top_value").Value
+					Value = x.Max("max_value").Value
 				})
 				.ToList();
 
