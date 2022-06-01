@@ -16,7 +16,7 @@ namespace ScoreSystem.Scoring
 			_repository = repository;
 		}
 
-		[HttpPost("Store")]
+		[HttpPost("Register")]
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
 		[ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -33,7 +33,7 @@ namespace ScoreSystem.Scoring
 			return Ok(response.Object);
 		}
 
-		[HttpGet("Store")]
+		[HttpGet("Leaderboard")]
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
 		[ProducesResponseType(StatusCodes.Status500InternalServerError)]

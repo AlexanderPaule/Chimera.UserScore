@@ -24,3 +24,20 @@ I choose this version of .NET core and not .NET 6 because of my familiarity with
 
 ## Technical Documentation
 API are documented with swagger that expose a handy UI for testing all endpoints.
+
+### Starting the service
+You need a working Server Instance of Elastic for testing the solution and can download one from https://www.elastic.co/downloads/elasticsearch
+Unzip it and open a CMD in the folder then run the next commands
+- bin\elasticsearch-service.bat install
+- bin\elasticsearch-setup-passwords.bat interactive
+- bin\elasticsearch-service.bat start
+put the registered password for elastic user in the configuration file **appsettings.json** in the project solution
+Now compile the solution and start it. A browser will be opened on swager path, so you can easilly proceed with testing.
+
+### Endpoints
+Endpoints are exposed by 2 different controllers
+- UserController
+-- [POST] /User/Register
+- ScoreController
+-- [POST] /Score/Register
+-- [GET]  /Score/Leaderboard
