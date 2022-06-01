@@ -39,7 +39,7 @@ Now compile the solution and start it. A browser will be opened on swager path, 
 ### Endpoints
 Endpoints are exposed by 2 different controllers
 - UserController
- - [POST] /User/Register
+  - [POST] /User/Register
 - ScoreController
- - [POST] /Score/Register
- - [GET]  /Score/Leaderboard
+  - [POST] /Score/Register
+  - [GET]  /Score/Leaderboard
