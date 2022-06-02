@@ -1,10 +1,24 @@
 # Chimera.ScoreSystem
 
-## Tecnologies
+## Overview
+### Tecnologies
 - Framework: **ASP.Net Core 3.1**
 - API Documentation: **Swagger**
 - Data Storage: **Elasticsearch**
 - Data Storage Client: **Nest**
+
+### Architecture
+```
++-----------------------------+
+|   ScoreSystem API Service   |
++-----------------------------+
+           |       ^
+           |       |
+           V       |
+       +---------------+
+       | Elasticsearch |
+       +---------------+
+```
 
 ## Component Choices
 The solution was not been developed in TDD because the requirements are mainly based on the tecnology handling and the core logic is absent.
@@ -39,12 +53,16 @@ Now compile the solution and start it. A browser will be opened on swager path, 
 ### Endpoints
 Endpoints are exposed by 2 different controllers
 - UserController
-  - [POST] /User/Register
+  - [POST] /User/Register (endpoint for register a new user)
 - ScoreController
-  - [POST] /Score/Register
-  - [GET] /Score/Leaderboard
+  - [POST] /Score/Register (endpoint for register a user score)
+  - [GET] /Score/Leaderboard (endpoint for view top scores, limited for view a renge bewtween 1 - 10.000)
 
 ## Improvments and Limitations
+The score is saved with a OccurredOn field and the value of this field is defined on server side. This allow the user to have a history of all his scores and view his progress during the time.
+This choice introduced a limitation on top scores view. To view only top scores an aggregation was been required to be implemented and the aggregation in Elasticsearch can not be paged, this is limiting the scores to be viewed to 10K, that is the maximum size allowed for the elastic query.
+
+
 The service is able to support 1K users and also 1M becuse Elastic is a scalable technology.
 As said before, Elasticsearch has no limitations on the number of open connection, but the calls can go in timeout if the traffic is too large, so in this case the solution will require a change of current configuration.
 For the solution only one node has been configured, but in case of the traffic increase, more nodes can be configured and the index can be distributed in that way.
