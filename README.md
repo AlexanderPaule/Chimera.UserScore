@@ -12,7 +12,7 @@ The Architecture is a REST API that stores data on the repository that uses Nest
 
 ### Database Choice
 I choose **elastycsearch** because of performance question made in the requirements related to possible future improvements. "Can we handle 1,000 users? What about 1,000,000?".
-In my first architecture I thout to use SQL Server for storaging data because of my familiarity with it, but it is not a scalable solution and it allows 32K of maximum open connections.
+In my first architecture I thought to use SQL Server for storaging data because of my familiarity with it, but it is not a scalable solution and it allows 32K of maximum open connections.
 SQL Server is a wrong technology if we need to allow 1M of open connections, it will simply crash and the cost for made the solution scalable could be very expansive.
 
 
