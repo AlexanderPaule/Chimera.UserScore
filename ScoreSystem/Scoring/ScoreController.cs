@@ -39,8 +39,8 @@ namespace ScoreSystem.Scoring
 		[ProducesResponseType(StatusCodes.Status500InternalServerError)]
 		public async Task<IActionResult> GetScoreAsync([FromQuery] int howMuch = 10)
 		{
-			if (howMuch < 0 || 10000 < howMuch)
-				return BadRequest($"[{nameof(howMuch)}] must be contained in the range 0 - 10000");
+			if (howMuch < 1 || 10000 < howMuch)
+				return BadRequest($"[{nameof(howMuch)}] must be contained in the range 1 - 10000");
 
 			var response = await _repository
 				.GetHighestAsync(howMuch);
