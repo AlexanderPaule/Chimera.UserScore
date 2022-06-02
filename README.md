@@ -42,4 +42,16 @@ Endpoints are exposed by 2 different controllers
   - [POST] /User/Register
 - ScoreController
   - [POST] /Score/Register
-  - [GET]  /Score/Leaderboard
+  - [GET] /Score/Leaderboard
+
+## Improvments and Limitations
+The service is able to support 1K users and also 1M becuse Elastic is a scalable technology.
+As said before, Elasticsearch has no limitations on the number of open connection, but the calls can go in timeout if the traffic is too large, so in this case the solution will require a change of current configuration.
+For the solution only one node has been configured, but in case of the traffic increase, more nodes can be configured and the index can be distributed in that way.
+
+
+Also the API service can be stressed in case of the traffic increase, and this can be solved with a multiple API nodes. In this case it will be necesary to introduce a balancer to redirect the calls to the less busy node.
+
+
+The bottleneck at the moment depends on the resources dedicated to the single actors, API service or Elasticsearch service.
+With a proper monitoring engine we can understand where could be the problem and reorganize the solution to support the traffic in the best way.
