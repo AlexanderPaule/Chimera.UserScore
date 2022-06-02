@@ -17,7 +17,7 @@ SQL Server is a wrong technology if we need to allow 1M of open connections, it 
 
 
 Elasticsearch instead is a very scalable solution and does not have limitations on number of connections. So it basically is perfect for handle a traficated service.
-For simplicity, the provided solution has only one node, and at the moment a high number of requests probably will be closed with a timeout error in case of 1M requests per second, but the power of Elastycsearch is that it can be scaled later at a cheap coast.
+For simplicity, the provided solution has only one node, and at the moment a high number of requests probably will be closed with a timeout error in case of 1M requests per second, but the power of Elasticsearch is that it can be scaled later at a cheap coast.
 
 ### ASP.NET Core 3.1
 I choose this version of .NET core and not .NET 6 because of my familiarity with it and I prefered to move on something I know for reduce the risks seeing the ammount of time for the project.
@@ -33,7 +33,7 @@ bin\elasticsearch-service.bat install
 bin\elasticsearch-setup-passwords.bat interactive
 bin\elasticsearch-service.bat start
 ```
-put the registered password for elastic user in the configuration file **appsettings.json** in the project solution
+Put the registered password for elastic user in the configuration file **appsettings.json** in the project solution.
 Now compile the solution and start it. A browser will be opened on swager path, so you can easilly proceed with testing.
 
 ### Endpoints
