@@ -50,7 +50,7 @@ As said before, Elasticsearch has no limitations on the number of open connectio
 For the solution only one node has been configured, but in case of the traffic increase, more nodes can be configured and the index can be distributed in that way.
 
 
-Also the API service can be stressed in case of the traffic increase, and this can be solved with a multiple API nodes. In this case it will be necesary to introduce a balancer to redirect the calls to the less busy node.
+Also the API service could be stressed in case of the traffic increase, and this can be solved with a multiple API nodes. In this case it will be necesary to introduce a balancer to redirect the calls to the less busy node.
 
 
 The bottleneck at the moment depends on the resources dedicated to the single actors, API service or Elasticsearch service.
