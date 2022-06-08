@@ -1,7 +1,7 @@
 ﻿using System;
 using CoreUser = ScoreSystem.Users.User;
 using CoreUserScore = ScoreSystem.Scoring.UserScore;
-using CoreegisteredUserScore = ScoreSystem.Scoring.RegisteredUserScore;
+using CoreRegisteredUserScore = ScoreSystem.Scoring.RegisteredUserScore;
 
 namespace ScoreSystem.Repository
 {
@@ -25,9 +25,9 @@ namespace ScoreSystem.Repository
 			};
 		}
 
-		internal CoreegisteredUserScore Convert(UserScore score)
+		internal CoreRegisteredUserScore Convert(UserScore score)
 		{
-			return new CoreegisteredUserScore
+			return new CoreRegisteredUserScore
 			{
 				Username = score.Username,
 				Value = score.Value,
